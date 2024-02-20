@@ -83,3 +83,58 @@ The security configuration allows access to the H2 Console at http://localhost:8
 * URL: jdbc:h2:mem:testdb
 * User: sa
 * Password: (empty)
+
+<br>
+
+<p>
+    This security configuration employs role-based access control for regulating endpoint access. Roles such as ROLE_USER, ROLE_FSK, and ROLE_ADMIN determine authorization levels. For example, /public endpoints are open to all users, while /private/admin requires ROLE_ADMIN. /private endpoints are accessible to ROLE_USER, ROLE_FSK, and ROLE_ADMIN. H2 Console access is restricted to "ADMIN" users. This role-centric approach allows administrators to flexibly control and secure application sections based on user roles.
+</p>
+
+
+<br>
+
+```
+      private void createDumyData() {
+        CreateUserRequest request = CreateUserRequest.builder()
+                .name("Emin")
+                .username("emin")
+                .password("pass")
+                .authorities(Set.of(Role.ROLE_USER))
+                .build();
+        userService.createUser(request);
+
+        CreateUserRequest request2 = CreateUserRequest.builder()
+                .name("FSK")
+                .username("fsk")
+                .password("pass")
+                .authorities(Set.of(Role.ROLE_FSK))
+                .build();
+        userService.createUser(request2);
+
+        CreateUserRequest request3 = CreateUserRequest.builder()
+                .name("No Name")
+                .username("noname")
+                .password("pass")
+                .authorities(Set.of(Role.ROLE_ADMIN))
+                .build();
+        userService.createUser(request3);
+    }
+```
+![image](https://github.com/fettahogluhande/SpringSecurity/assets/75665898/5f4ee4d9-9e7a-45ee-891f-f9802bd18491)
+```
+.requestMatchers(mvcRequestBuilder.pattern("/public/**")).permitAll(): Any request matching the pattern /public/** 
+```
+is permitted without authentication. This means that these endpoints are accessible to everyone without the need for authentication.
+```
+.requestMatchers(mvcRequestBuilder.pattern("/private/admin/**")).hasRole(Role.ROLE_ADMIN.getValue()): 
+```
+require the user to have the role ROLE_ADMIN. This means only users with the ROLE_ADMIN role will be authorized to access these endpoints.
+```
+.requestMatchers(mvcRequestBuilder.pattern("/private/**")).hasAnyRole(Role.ROLE_USER.getValue(), Role.ROLE_FSK.getValue(), Role.ROLE_ADMIN.getValue()):
+```
+can be accessed by users with any of the specified roles (ROLE_USER, ROLE_FSK, ROLE_ADMIN). It uses hasAnyRole to check for multiple roles.
+```
+.requestMatchers(PathRequest.toH2Console()).hasRole("ADMIN"):
+```
+Requests to the H2 Console path require the user to have the role "ADMIN". This ensures that access to the H2 Console is restricted to users with the specified role.
+
