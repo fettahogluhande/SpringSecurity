@@ -66,3 +66,20 @@ This confirms that the public endpoint is accessible.<br> <br>
 **note:** Try the same things by typing http://localhost:8020/private. However, do not forget to select basic auth from Authorization and enter the username and password we specified in the code.
 
 ![image](https://github.com/fettahogluhande/SpringSecurity/assets/75665898/4ac48c4d-ddc5-4e22-8781-d785bb6483dc)
+
+<hr>
+
+## Spring Security Basic Authentication Example
+
+- **Basic Authentication:** Securing the application with username and password.
+- **Role-based Authorization:** Implementing role-based access control for different parts of the application.
+- **Endpoint Security:** Configuring security for specific endpoints.
+- **H2 Console Integration:** Allowing access to the H2 Console for development purposes.
+
+### H2 Console
+For development purposes, the H2 Console is accessible.<br>
+The security configuration allows access to the H2 Console at http://localhost:8080/h2-console with the following credentials:
+
+* URL: jdbc:h2:mem:testdb
+* User: sa
+* Password: (empty)
